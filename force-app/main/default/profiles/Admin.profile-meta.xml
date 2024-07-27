@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Profile xmlns="http://soap.sforce.com/2006/04/metadata">
+<<<<<<< HEAD
     <classAccesses>
         <apexClass>AccountFieldRetriever</apexClass>
         <enabled>true</enabled>
@@ -75,6 +76,9 @@
         <object>OutletLocale__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
+=======
+    <custom>false</custom>
+>>>>>>> f85b68b80132b33ec929c999e587403bd1e2a510
     <userLicense>Salesforce</userLicense>
     <userPermissions>
         <enabled>true</enabled>
@@ -98,10 +102,13 @@
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
+<<<<<<< HEAD
         <name>AllowObjectDetectionTraining</name>
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
+=======
+>>>>>>> f85b68b80132b33ec929c999e587403bd1e2a510
         <name>AllowUniversalSearch</name>
     </userPermissions>
     <userPermissions>
@@ -234,6 +241,13 @@
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
+<<<<<<< HEAD
+=======
+        <name>CreateWorkBadgeDefinition</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+>>>>>>> f85b68b80132b33ec929c999e587403bd1e2a510
         <name>CreateWorkspaces</name>
     </userPermissions>
     <userPermissions>
@@ -582,6 +596,13 @@
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
+<<<<<<< HEAD
+=======
+        <name>ManageTranslation</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+>>>>>>> f85b68b80132b33ec929c999e587403bd1e2a510
         <name>ManageUnlistedGroups</name>
     </userPermissions>
     <userPermissions>
@@ -678,10 +699,13 @@
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
+<<<<<<< HEAD
         <name>SlackServiceUser</name>
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
+=======
+>>>>>>> f85b68b80132b33ec929c999e587403bd1e2a510
         <name>SolutionImport</name>
     </userPermissions>
     <userPermissions>
