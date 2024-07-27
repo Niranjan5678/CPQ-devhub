@@ -4,7 +4,7 @@ on:
     paths:
       - force-app/**
     branches:
-      - Release
+      - Develop
 jobs:
   validate-to-devint:
     runs-on: ubuntu-latest
