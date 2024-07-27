@@ -8,7 +8,7 @@ public class ApprovalHelper {
         // Submit the approval request
         Approval.ProcessResult result = Approval.process(req);
         
-        // Check if the submission was successful
+        // Check if the submission was successfully added to quote
         if (result.isSuccess()) {
             System.debug('Quote submitted for approval successfully.');
         } else {
