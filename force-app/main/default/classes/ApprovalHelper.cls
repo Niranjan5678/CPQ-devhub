@@ -5,7 +5,7 @@ public class ApprovalHelper {
         req.setComments('Submitting quote for approval automatically.');
         req.setObjectId(quoteId);
         
-        // Submit the approval request
+        // Submit the approval request when the quote has sup items
         Approval.ProcessResult result = Approval.process(req);
         
         // Check if the submission was successfully added to quote
