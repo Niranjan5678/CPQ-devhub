@@ -1,7 +1,9 @@
 name: Validate to DEVINT
-
 on:
-  push:
+  pull_request:
+    types:
+      - opened
+      - synchronize
     paths:
       - force-app/**
     branches:
@@ -9,55 +11,53 @@ on:
 jobs:
   validate-to-devint:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/setup-node@v3
         with:
           node-version: "18"
-
       - name: Checkout source code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
       - name: Install Salesforce CLI
-        run: |
-          wget https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
+        run: >
+          wget
+          https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
+
           mkdir ~/sfdx
+
           tar xJf sfdx-linux-x64.tar.xz -C ~/sfdx --strip-components 1
+
           echo "$HOME/sfdx/bin" >> $GITHUB_PATH
+
           ~/sfdx/bin/sfdx version
-
       - name: Populate auth file with SFDX_URL secret of target org
-        run: echo ${{ secrets.DEV_INT }} > ./DEV_INT.txt
-
+        run: |
+          echo ${{ secrets.DEV_INT}} > ./DEV_INT.txt
       - name: Authenticate to target Org
         run: sfdx auth:sfdxurl:store -f ./DEV_INT.txt -s -a targetOrg
-
-      - name: Install SFDX Git Delta
+      - name: Installing sfdx git delta
         run: |
           echo y | sfdx plugins:install sfdx-git-delta
-          sfdx plugins
-
+          sfdx plugins 
       - name: Create delta packages for new, modified or deleted metadata
-        run: |
+        run: >
           mkdir changed-sources
-          sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
 
-      - name: Install Java
-        run: sudo apt-get update && sudo apt-get install -y default-jdk
-
-      - name: Install SFDX Scanner
+          sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/ 
+      - name: Installing java
+        run: sudo apt-get update && sudo apt-get install default-jdk
+      - name: Installing SFDX scanner
         run: sfdx plugins:install @salesforce/sfdx-scanner
-
       - name: Scan code
-        run: |
-          sfdx scanner:run --format sarif --target 'changed-sources/**/*.cls' --category 'Security,Code Style,Performance,Best Practices,Design' --outfile 'apexScanResults.sarif'
-
+        run: sfdx scanner:run --format sarif --target 'changed-sources/**/*.cls'
+          --category 'Security,Code Style,Performance,Best Practices,Design'
+          --outfile 'apexScanResults.sarif'
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v1
         with:
           sarif_file: changed-sources/apexScanResults.sarif
-
       - name: Deployment - run all tests
-        run: sfdx force:source:deploy -p "changed-sources/force-app" --checkonly --testlevel RunLocalTests --json
+        run: >
+          sfdx force:source:deploy -p "changed-sources/force-app" --checkonly
+          --testlevel RunLocalTests --json
