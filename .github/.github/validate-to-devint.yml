@@ -33,7 +33,7 @@ jobs:
       - name: Install sfdx git delta and SFDX scanner
         run: |
           echo y | sfdx plugins:install sfdx-git-delta
-          sfdx plugins:install @salesforce/sfdx-scanner
+          yarn add @salesforce/sfdx-scanner@latest --non-interactive --ignore-engines
       - name: Create delta packages for new, modified or deleted metadata
         run: |
           mkdir changed-sources
