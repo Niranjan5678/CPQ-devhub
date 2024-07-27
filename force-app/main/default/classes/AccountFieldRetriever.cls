@@ -8,6 +8,7 @@ public class AccountFieldRetriever {
         for (String fieldName : fieldMap.keySet()) {
             query += fieldName + ', ';
         }
+        //soql 
         query = query.removeEnd(', ') + ' FROM Account WHERE Id = :accountId';
         
         // Execute the query
