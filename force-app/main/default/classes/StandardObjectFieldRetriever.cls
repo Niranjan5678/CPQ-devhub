@@ -21,7 +21,7 @@ public class StandardObjectFieldRetriever {
                 }
                 Map<String, Schema.SObjectField> fieldMap = describeResult.fields.getMap();
                 
-                // Build the SOQL query dynamically
+                // Build the SOQL query dynamically check 29/07
                 String query = 'SELECT ';
                 for (String fieldName : fieldMap.keySet()) {
                     query += fieldName + ', ';
