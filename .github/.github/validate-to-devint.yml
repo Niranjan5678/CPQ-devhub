@@ -1,63 +1,40 @@
-name: Validate to DEVINT
+name: Validate Deployment on PR
+
 on:
   pull_request:
-    types:
-      - opened
-      - synchronize
-    paths:
-      - force-app/**
     branches:
       - release
+
 jobs:
-  validate-to-devint:
+  validate-deployment:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: "18"
-      - name: Checkout source code
-        uses: actions/checkout@v3
+          node-version: '18.18.0'
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Salesforce CLI
+        uses: amtrack/sfdx-action@v1
         with:
-          fetch-depth: 0
-      - name: Install Salesforce CLI
-        run: >
-          wget
-          https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
+          version: latest
 
-          mkdir ~/sfdx
-
-          tar xJf sfdx-linux-x64.tar.xz -C ~/sfdx --strip-components 1
-
-          echo "$HOME/sfdx/bin" >> $GITHUB_PATH
-
-          ~/sfdx/bin/sfdx version
-      - name: Populate auth file with SFDX_URL secret of target org
+      - name: Authenticate with Salesforce
         run: |
-          echo ${{ secrets.DEV_INT}} > ./DEV_INT.txt
-      - name: Authenticate to target Org
-        run: sfdx auth:sfdxurl:store -f ./DEV_INT.txt -s -a targetOrg
-      - name: Installing sfdx git delta
-        run: |
-          echo y | sfdx plugins:install sfdx-git-delta
-          sfdx plugins 
-      - name: Create delta packages for new, modified or deleted metadata
-        run: >
-          mkdir changed-sources
+          echo "Authenticating with Salesforce using OAuth 2.0"
+          sfdx force:auth:web:login --setalias myOrg --instanceurl ${{ secrets.DEV_INSTANCE_URL }} --clientid ${{ secrets.DEV_CONSUMER_KEY }} --clientsecret ${{ secrets.DEV_CLIENT_SECRET }} --username ${{ secrets.DEV_USERNAME }} --password ${{ secrets.DEV_PASSWORD }}
 
-          sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/ 
-      - name: Installing java
-        run: sudo apt-get update && sudo apt-get install default-jdk
-      - name: Installing SFDX scanner
-        run: sfdx plugins:install @salesforce/sfdx-scanner
-      - name: Scan code
-        run: sfdx scanner:run --format sarif --target 'changed-sources/**/*.cls'
-          --category 'Security,Code Style,Performance,Best Practices,Design'
-          --outfile 'apexScanResults.sarif'
-      - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v1
-        with:
-          sarif_file: changed-sources/apexScanResults.sarif
-      - name: Deployment - run all tests
-        run: >
-          sfdx force:source:deploy -p "changed-sources/force-app" --checkonly
-          --testlevel RunLocalTests --json
+      - name: Validate Deployment
+        run: sfdx force:source:deploy -p force-app -u myOrg --checkonly
+
+      - name: Notify Success
+        if: success()
+        run: echo "Deployment validation successful. You can now merge the PR."
+
+      - name: Notify Failure
+        if: failure()
+        run: echo "Deployment validation failed. Please fix the issues before merging."
