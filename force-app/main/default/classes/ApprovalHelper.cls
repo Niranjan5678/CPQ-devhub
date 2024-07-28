@@ -8,7 +8,7 @@ public class ApprovalHelper {
         // Submit the approval request when the quote has sup items
         Approval.ProcessResult result = Approval.process(req);
         
-        // Check if the submission was successfully added to quote
+        // Check if the submission was successfully added to quote 29/07
         if (result.isSuccess()) {
             System.debug('Quote submitted for approval successfully.');
         } else {
