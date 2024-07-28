@@ -14,7 +14,7 @@ public class AccountFieldRetriever {
         // Execute the query
         Account acc = Database.query(query);
         
-        // Iterate through the fields and get their values check 29/07
+        // Iterate through the fields and get their values check 29/07 2325
         for (String fieldName : fieldMap.keySet()) {
             Object fieldValue = acc.get(fieldName);
             System.debug('Field: ' + fieldName + ' Value: ' + fieldValue);
