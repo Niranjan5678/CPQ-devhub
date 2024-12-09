@@ -11,14 +11,7 @@ public class StandardObjectFieldRetriever {
                 String objectName = describeResult.getName();
                 System.debug('Object: ' + objectName);
                 
-                // Get the describe result for the objects fields
-                Schema.DescribeFieldResult describeFieldResult = sObjectType.getDescribe().fields.getMap().get('Name').getDescribe();
-                
-                // Check if the object has a name field
-                if (describeFieldResult.isNameField()) {
-                    String fieldName = describeFieldResult.getName();
-                    System.debug('Name Field: ' + fieldName);
-                }
+                // Get the describe result for the object
                 Map<String, Schema.SObjectField> fieldMap = describeResult.fields.getMap();
                 
                 // Build the SOQL query dynamically
